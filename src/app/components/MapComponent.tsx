@@ -33,8 +33,8 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 	const [timeToShow, setTimeToShow] = useState<number>(24);
 
 	const facets = useMemo(
-		() => calculateFacets(emergencyEvents),
-		[emergencyEvents],
+		() => calculateFacets(emergencyEvents, timeToShow),
+		[emergencyEvents, timeToShow],
 	);
 
 	const hasFilters = useMemo(() => {
