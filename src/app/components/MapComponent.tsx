@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button';
 import StatisticDrawer from './StatisticDrawer';
 import { Filter, Info } from 'lucide-react';
 import FilterDrawer from './FilterDrawer';
+import SideDrawer from './SideDrawer';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 
 const getMapData = async (): Promise<EmergencyEvent[]> => {
 	const response = await fetch('/api/map-data');
@@ -80,6 +82,17 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 					setTimeToShow={setTimeToShow}
 				/>
 			</Drawer>
+			<Sheet>
+				<SheetTrigger asChild>
+					<Button
+						variant="outline"
+						size="icon"
+						className="absolute top-4 left-28 z-[1000]"
+					>
+					</Button>
+				</SheetTrigger>
+				<SideDrawer content={emergencyEvents} />
+			</Sheet>
 
 			<Card className="size-full">
 				<CardContent className="p-0 size-full">
@@ -104,9 +117,9 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 							.filter((emergencyEvent) =>
 								hasFilters
 									? filterDataFunction(
-											emergencyEvent,
-											filters,
-									  )
+										emergencyEvent,
+										filters,
+									)
 									: true,
 							)
 							.map((emergencyEvent) => (
