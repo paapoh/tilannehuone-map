@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 
 import { EmergencyEvent } from "../types/emergency";
 import { useEffect, useState } from "react";
+import { searchFrom } from "@/lib/utils";
 
 function SideDrawer({ content }: EmergencyEvent[]) {
 	const [search, setSearch] = useState('');
@@ -32,11 +33,7 @@ function SideDrawer({ content }: EmergencyEvent[]) {
 			let updatedResults = results;
 
 			if (debouncedSearch.trim().length > 0) {
-				updatedResults = results.filter(item =>
-					item.type?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-					item.timestamp?.includes(debouncedSearch) ||
-					item.location?.toLowerCase().includes(debouncedSearch.toLowerCase())
-				);
+				updatedResults = searchFrom(results, debouncedSearch);
 			}
 
 			updatedResults.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -55,7 +52,7 @@ function SideDrawer({ content }: EmergencyEvent[]) {
 			<div className="overflow-y-auto max-h-full">
 				{filteredResults.map(item => {
 					return (
-						<div>
+						<div key={item.id}>
 							<span className="font-bold">{item.location}</span> <span>{item.timestamp}</span>
 							<p className="mb-4">{item.type}</p>
 						</div>
