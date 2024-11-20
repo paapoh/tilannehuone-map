@@ -16,7 +16,7 @@ import {
 import { Drawer, DrawerTrigger } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import StatisticDrawer from './StatisticDrawer';
-import { Filter, Info } from 'lucide-react';
+import { Filter, Info, PanelRightOpen } from 'lucide-react';
 import FilterDrawer from './FilterDrawer';
 import SideDrawer from './SideDrawer';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
@@ -89,6 +89,7 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 						size="icon"
 						className="absolute top-4 left-28 z-[1000]"
 					>
+						<PanelRightOpen />
 					</Button>
 				</SheetTrigger>
 				<SideDrawer content={emergencyEvents} />
