@@ -106,7 +106,7 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 									? filterDataFunction(
 											emergencyEvent,
 											filters,
-									  )
+										)
 									: true,
 							)
 							.map((emergencyEvent) => (
