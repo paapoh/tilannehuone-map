@@ -7,7 +7,7 @@ import {
 import { EmergencyEvent } from "../types/emergency";
 
 function SideDrawer(content: { content: EmergencyEvent[] }) {
-	const contentArray = content.content as EmergencyEvent[];
+	const contentArray = content.content;
 	const sorted = contentArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 	return (
 		<SheetContent className="z-[1000]">
