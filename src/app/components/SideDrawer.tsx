@@ -4,18 +4,56 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet"
-import { EmergencyEvent } from "../types/emergency";
+import { Input } from "@/components/ui/input"
 
-function SideDrawer(content: { content: EmergencyEvent[] }) {
-	const contentArray = content.content;
-	const sorted = contentArray.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+import { EmergencyEvent } from "../types/emergency";
+import { useEffect, useState } from "react";
+
+function SideDrawer({ content }: EmergencyEvent[]) {
+	const [search, setSearch] = useState('');
+	const [results, setResults] = useState(content || []);
+	const [filteredResults, setFilteredResults] = useState([]);
+	const [debouncedSearch, setDebouncedSearch] = useState('');
+
+	const handleChange = (e) => {
+		setSearch(e.target.value);
+		setDebouncedSearch(e.target.value)
+	}
+
+	useEffect(() => {
+		if (content?.length) {
+			setResults(content);
+			setFilteredResults(content);
+		}
+	}, [content]);
+
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			let updatedResults = results;
+
+			if (debouncedSearch.trim().length > 0) {
+				updatedResults = results.filter(item =>
+					item.type?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+					item.timestamp?.includes(debouncedSearch) ||
+					item.location?.toLowerCase().includes(debouncedSearch.toLowerCase())
+				);
+			}
+
+			updatedResults.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+			setFilteredResults(updatedResults);
+		}, 300); // 300ms debounce delay for better ux
+
+		return () => clearTimeout(handler);
+	}, [debouncedSearch, results]);
 	return (
 		<SheetContent className="z-[1000]">
 			<SheetHeader className="mb-3">
 				<SheetTitle>Listaus tapahtumista</SheetTitle>
+				<Input placeholder="Tyyppi, paikka, aika" value={search} onChange={handleChange} />
 			</SheetHeader>
 			<div className="overflow-y-auto max-h-full">
-				{sorted.map(item => {
+				{filteredResults.map(item => {
 					return (
 						<div>
 							<span className="font-bold">{item.location}</span> <span>{item.timestamp}</span>
