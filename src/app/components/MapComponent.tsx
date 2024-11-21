@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,6 +20,9 @@ import { Filter, Info } from 'lucide-react';
 import FilterDrawer from './FilterDrawer';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import createClusterCustomIcon from './ClusterIcon';
+import { useQuery } from '@tanstack/react-query';
+import { useMap } from 'react-leaflet';
+import { useEffect } from 'react';
 
 const getMapData = async (): Promise<EmergencyEvent[]> => {
 	const response = await fetch('/api/map');
@@ -28,11 +31,13 @@ const getMapData = async (): Promise<EmergencyEvent[]> => {
 };
 
 const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
-	const [emergencyEvents, setEmergencyEvents] = useState<EmergencyEvent[]>(
-		[],
-	);
 	const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
 	const [timeToShow, setTimeToShow] = useState<number>(24);
+
+	const { data: emergencyEvents = [], isLoading } = useQuery({
+		queryKey: ['emergencyEvents'],
+		queryFn: getMapData,
+	});
 
 	const facets = useMemo(
 		() => calculateFacets(emergencyEvents, timeToShow),
@@ -42,12 +47,6 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 	const hasFilters = useMemo(() => {
 		return Object.values(filters).some((filter) => filter.length > 0);
 	}, [filters]);
-
-	useEffect(() => {
-		getMapData().then((data) => {
-			setEmergencyEvents(data);
-		});
-	}, []);
 
 	return (
 		<div className="mx-auto size-full relative">
@@ -84,11 +83,13 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 			</Drawer>
 
 			<Card className="size-full">
-				<CardContent className="p-0 size-full">
+				<CardContent
+					className={`p-0 size-full ${isLoading ? 'blur-sm' : 'animate-mapAppear'}`}
+				>
 					<MapContainer
 						center={[65.001515, 25.427857]}
 						zoomControl={false}
-						zoom={6}
+						zoom={5}
 						className="size-full rounded-md overflow-hidden"
 					>
 						<TileLayer
@@ -96,6 +97,7 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 							url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
 							zIndex={1}
 						/>
+						<ZoomAnimation isLoading={isLoading} />
 						<MarkerClusterGroup
 							maxClusterRadius={40}
 							iconCreateFunction={createClusterCustomIcon}
@@ -182,6 +184,23 @@ const EmergencyEventInfo = ({
 			/>
 		</div>
 	);
+};
+
+const ZoomAnimation = ({ isLoading }: { isLoading: boolean }) => {
+	const map = useMap();
+
+	useEffect(() => {
+		if (!isLoading) {
+			setTimeout(() => {
+				map.setZoom(6, {
+					animate: true,
+					duration: 1,
+				});
+			}, 100);
+		}
+	}, [isLoading, map]);
+
+	return null;
 };
 
 export default MapComponent;

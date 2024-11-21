@@ -1,13 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 const DynamicMapComponent = dynamic(() => import('./components/MapComponent'), {
 	loading: () => (
 		<Card className="size-full">
-			<CardContent className="h-full w-full flex items-center justify-center rounded-md bg-map-background">
-				<Loader2 className="animate-spin text-map-foreground" />
-			</CardContent>
+			<CardContent className="p-0 h-full w-full flex items-center justify-center rounded-md bg-map-background"></CardContent>
 		</Card>
 	),
 	ssr: false,
