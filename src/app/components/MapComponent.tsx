@@ -20,9 +20,11 @@ import { Filter, Info, PanelRightOpen } from 'lucide-react';
 import FilterDrawer from './FilterDrawer';
 import SideDrawer from './SideDrawer';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
+import createClusterCustomIcon from './ClusterIcon';
 
 const getMapData = async (): Promise<EmergencyEvent[]> => {
-	const response = await fetch('/api/map-data');
+	const response = await fetch('/api/map');
 	const data = await response.json();
 	return data;
 };
@@ -108,40 +110,49 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 							url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
 							zIndex={1}
 						/>
-						{emergencyEvents
-							.filter((emergencyEvent) =>
-								filterDataByTimestamp(
-									emergencyEvent,
-									timeToShow,
-								),
-							)
-							.filter((emergencyEvent) =>
-								hasFilters
-									? filterDataFunction(
+						<MarkerClusterGroup
+							maxClusterRadius={40}
+							iconCreateFunction={createClusterCustomIcon}
+						>
+							{emergencyEvents
+								.filter((emergencyEvent) =>
+									filterDataByTimestamp(
 										emergencyEvent,
-										filters,
-									)
-									: true,
-							)
-							.map((emergencyEvent) => (
-								<Marker
-									key={emergencyEvent.id}
-									position={emergencyEvent.position}
-									icon={MarkerIcon(emergencyEvent)}
-								>
-									<Popup>
-										{isDebug ? (
-											<DebugEmergencyEventInfo
-												emergencyEvent={emergencyEvent}
-											/>
-										) : (
-											<EmergencyEventInfo
-												emergencyEvent={emergencyEvent}
-											/>
-										)}
-									</Popup>
-								</Marker>
-							))}
+										timeToShow,
+									),
+								)
+								.filter((emergencyEvent) =>
+									hasFilters
+										? filterDataFunction(
+												emergencyEvent,
+												filters,
+											)
+										: true,
+								)
+								.map((emergencyEvent) => (
+									<Marker
+										key={emergencyEvent.id}
+										position={emergencyEvent.position}
+										icon={MarkerIcon(emergencyEvent)}
+									>
+										<Popup>
+											{isDebug ? (
+												<DebugEmergencyEventInfo
+													emergencyEvent={
+														emergencyEvent
+													}
+												/>
+											) : (
+												<EmergencyEventInfo
+													emergencyEvent={
+														emergencyEvent
+													}
+												/>
+											)}
+										</Popup>
+									</Marker>
+								))}
+						</MarkerClusterGroup>
 					</MapContainer>
 				</CardContent>
 			</Card>
