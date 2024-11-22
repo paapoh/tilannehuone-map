@@ -63,6 +63,15 @@ export default {
 			boxShadow: {
 				marker: '0 0 10px rgba(0,0,0,0.3)',
 			},
+			keyframes: {
+				mapAppear: {
+					'0%': { filter: 'blur(4px)' },
+					'100%': { filter: 'blur(0px)' },
+				},
+			},
+			animation: {
+				mapAppear: 'mapAppear 1s ease-out',
+			},
 		},
 	},
 	plugins: [require('tailwindcss-animate')],
