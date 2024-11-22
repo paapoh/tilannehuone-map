@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useMemo, useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
 import { EmergencyEvent } from '../types/emergency';
@@ -21,8 +21,6 @@ import FilterDrawer from './FilterDrawer';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import createClusterCustomIcon from './ClusterIcon';
 import { useQuery } from '@tanstack/react-query';
-import { useMap } from 'react-leaflet';
-import { useEffect } from 'react';
 
 const getMapData = async (): Promise<EmergencyEvent[]> => {
 	const response = await fetch('/api/map');
