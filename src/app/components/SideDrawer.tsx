@@ -11,13 +11,11 @@ import { useEffect, useState } from "react";
 import { searchFrom } from "@/lib/utils";
 
 function SideDrawer({ content }: EmergencyEvent[]) {
-	const [search, setSearch] = useState('');
 	const [results, setResults] = useState(content || []);
 	const [filteredResults, setFilteredResults] = useState([]);
 	const [debouncedSearch, setDebouncedSearch] = useState('');
 
 	const handleChange = (e) => {
-		setSearch(e.target.value);
 		setDebouncedSearch(e.target.value)
 	}
 
@@ -47,7 +45,7 @@ function SideDrawer({ content }: EmergencyEvent[]) {
 		<SheetContent className="z-[1000]">
 			<SheetHeader className="mb-3">
 				<SheetTitle>Listaus tapahtumista</SheetTitle>
-				<Input placeholder="Tyyppi, paikka, aika" value={search} onChange={handleChange} />
+				<Input placeholder="Tyyppi, paikka, aika" value={debouncedSearch} onChange={handleChange} />
 			</SheetHeader>
 			<div className="overflow-y-auto max-h-full">
 				{filteredResults.map(item => {
