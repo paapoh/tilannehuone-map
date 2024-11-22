@@ -16,8 +16,10 @@ import {
 import { Drawer, DrawerTrigger } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import StatisticDrawer from './StatisticDrawer';
-import { Filter, Info } from 'lucide-react';
+import { Filter, Info, PanelRightOpen } from 'lucide-react';
 import FilterDrawer from './FilterDrawer';
+import SideDrawer from './SideDrawer';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import createClusterCustomIcon from './ClusterIcon';
 import { useQuery } from '@tanstack/react-query';
@@ -79,6 +81,18 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 					setTimeToShow={setTimeToShow}
 				/>
 			</Drawer>
+			<Sheet>
+				<SheetTrigger asChild>
+					<Button
+						variant="outline"
+						size="icon"
+						className="absolute top-4 left-28 z-[1000]"
+					>
+						<PanelRightOpen />
+					</Button>
+				</SheetTrigger>
+				<SideDrawer content={emergencyEvents} />
+			</Sheet>
 
 			<Card className="size-full">
 				<CardContent
