@@ -10,12 +10,16 @@ import { EmergencyEvent } from "../types/emergency";
 import { useEffect, useState } from "react";
 import { searchFrom } from "@/lib/utils";
 
-function SideDrawer({ content }: EmergencyEvent[]) {
-	const [results, setResults] = useState(content || []);
-	const [filteredResults, setFilteredResults] = useState([]);
+interface SideDrawerProps {
+	content: EmergencyEvent[]
+}
+
+const SideDrawer: React.FC<SideDrawerProps> = ({ content }) => {
+	const [results, setResults] = useState<EmergencyEvent[]>(content || []);
+	const [filteredResults, setFilteredResults] = useState<EmergencyEvent[]>([]);
 	const [debouncedSearch, setDebouncedSearch] = useState('');
 
-	const handleChange = (e) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setDebouncedSearch(e.target.value)
 	}
 
@@ -34,7 +38,7 @@ function SideDrawer({ content }: EmergencyEvent[]) {
 				updatedResults = searchFrom(results, debouncedSearch);
 			}
 
-			updatedResults.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+			updatedResults.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
 			setFilteredResults(updatedResults);
 		}, 300); // 300ms debounce delay for better ux
