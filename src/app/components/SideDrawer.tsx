@@ -3,13 +3,13 @@ import { SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { EmergencyEvent } from '../types/emergency';
 import { Dispatch, RefObject, SetStateAction, useState } from 'react';
-import { findMarkerByPosition, searchFrom } from '@/lib/utils';
-import { Map, Marker } from 'leaflet';
+import { searchFrom } from '@/lib/utils';
+import { Map, type Marker } from 'leaflet';
 interface SideDrawerProps {
 	content: EmergencyEvent[];
 	map: RefObject<Map>;
 	setSheetOpen: Dispatch<SetStateAction<boolean>>;
-	markers: RefObject<Marker[]>;
+	markers: RefObject<Record<string, Marker>>;
 }
 const SideDrawer: React.FC<SideDrawerProps> = ({
 	content,
@@ -24,10 +24,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({
 	const handleClick = (event: EmergencyEvent) => {
 		map.current?.flyTo(event.position, 15);
 		setSheetOpen(false);
-		const foundMarker = findMarkerByPosition(event.position, markers);
-		map.current?.on('moveend', () => {
-			foundMarker ? foundMarker.openPopup() : null;
-		});
+		// FIXME: This doesn't work without waiting moveend, but if we have that hook, it fills the call stack if someone e.g., zooms out :(
+		// const marker = markers.current?.[event.id];
+		// map.current?.on('moveend', () => {
+		// 	marker ? marker.openPopup() : null;
+		// });
 	};
 	return (
 		<SheetContent className="z-[1000]">

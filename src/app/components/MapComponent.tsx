@@ -36,7 +36,7 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 	const [timeToShow, setTimeToShow] = useState<number>(24);
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const mapRef = useRef<Map | null>(null);
-	const markerRefs = useRef<LeafletMarker[]>([]);
+	const markerRefs = useRef<Record<string, LeafletMarker>>({});
 
 	const { data: emergencyEvents = [], isLoading } = useQuery({
 		queryKey: ['emergencyEvents'],
@@ -52,13 +52,15 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 		return Object.values(filters).some((filter) => filter.length > 0);
 	}, [filters]);
 
-	mapRef.current?.on('movestart', () => {
-		markerRefs.current.map((marker) => {
-			if (marker) {
-				marker.closePopup();
-			}
-		});
-	});
+	// FIXME: Have to come up with better solution..., e.g., storing the last visited marker's id
+	// mapRef.current?.on('movestart', () => {
+	// 	Object.entries(markerRefs.current).map(({ _, marker }) => {
+	// 		console.log(marker);
+	// 		if (marker) {
+	// 			marker.closePopup();
+	// 		}
+	// 	});
+	// });
 
 	return (
 		<div className="mx-auto size-full relative">
@@ -148,14 +150,16 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 											)
 										: true,
 								)
-								.map((emergencyEvent, index) => (
+								.map((emergencyEvent) => (
 									<Marker
 										key={emergencyEvent.id}
 										position={emergencyEvent.position}
 										icon={MarkerIcon(emergencyEvent)}
 										ref={(el) => {
 											if (el && markerRefs.current)
-												markerRefs.current[index] = el;
+												markerRefs.current[
+													emergencyEvent.id
+												] = el;
 										}}
 									>
 										<Popup>
