@@ -1,0 +1,10 @@
+{
+  "name": "tilannehuone-datafetcher",
+  "scripts": {
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "tilannehuone-shared": "*"
+  }
+}
