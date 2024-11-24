@@ -37,7 +37,9 @@ export async function GET() {
 		const response = await fetch(
 			'https://www.tilannehuone.fi/halytysmap.php?zoom=&aikavali=48',
 			{
-				cache: 'no-store',
+				next: {
+					revalidate: 600,
+				},
 			},
 		);
 		const text = await response.text();

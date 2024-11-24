@@ -46,7 +46,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({
 						<div
 							key={item.id}
 							className="hover:bg-gray-50 cursor-pointer"
-							onClick={(_) => handleClick(item)}
+							onClick={() => handleClick(item)}
 						>
 							<span className="font-bold">{item.location}</span>{' '}
 							<span>{item.timestamp}</span>

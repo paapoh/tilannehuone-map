@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import dynamic from 'next/dynamic';
 
 const DynamicMapComponent = dynamic(() => import('./components/MapComponent'), {
