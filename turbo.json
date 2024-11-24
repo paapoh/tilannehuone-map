@@ -4,5 +4,6 @@
     "dev": {
         "cache": false
       }
-  }
+  },
+  "globalEnv": ["RABBITMQ_USERNAME", "RABBITMQ_PASSWORD", "RABBITMQ_HOST"]
 }

@@ -1,35 +1,26 @@
-import { parseEmergencyData, parseEmergencyTranslations, transformEmergencyData } from 'tilannehuone-shared'
+import { EmergencyEvent } from "tilannehuone-shared";
+import mqConnection from "./connection";
+import { sendEvents } from "./event";
+import { fetchData } from "./handleData";
+
+const send = async (events: EmergencyEvent[]) => {
+    await mqConnection.connect();
+
+    sendEvents(events);
+};
+
 const main = async () => {
-    try {
-        const response = await fetch(
-            'https://www.tilannehuone.fi/halytysmap.php?zoom=&aikavali=48',
-            {
-                cache: 'no-store',
-            },
-        );
-        const text = await response.text();
-
-        const emergencyTranslations = parseEmergencyTranslations(text);
-        const emergencyData = parseEmergencyData(text);
-
-        const transformedData = transformEmergencyData(
-            emergencyData,
-            emergencyTranslations,
-        );
-
-        return transformedData;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        if (error instanceof SyntaxError) {
-            return {
-                error: 'JSON parsing failed',
-                message: error.message,
-            }
-        }
-        return {
-            error: 'Failed to fetch data',
-        }
+    const data = await fetchData();
+    if (isEmergencyEventArray(data)) {
+        send(data);
     }
+}
+
+type InputType = EmergencyEvent[] | { error: string; message: string } | { error: string; message?: undefined };
+
+// TODO: Move to shared lib?
+function isEmergencyEventArray(input: InputType): input is EmergencyEvent[] {
+    return Array.isArray(input);
 }
 
 main()
