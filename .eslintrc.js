@@ -1,30 +1,10 @@
+// This configuration only applies to the package manager root.
+/** @type {import("eslint").Linter.Config} */
 module.exports = {
-	extends: ['next/core-web-vitals', 'plugin:prettier/recommended'],
-	plugins: ['prettier', 'filename-rules'],
-	rules: {
-		'prettier/prettier': [
-			'warn',
-			{},
-			{
-				usePrettierrc: true, // Use .prettierrc.js
-			},
-		],
-		quotes: ['warn', 'single'],
-	},
-	settings: {
-		'import/resolver': {
-			node: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			},
-		},
-	},
-	overrides: [
-		{
-			files: ['src/app/components/**/*.{js,jsx,ts,tsx}'],
-			plugins: ['filename-rules'],
-			rules: {
-				'filename-rules/match': [2, 'pascalcase'],
-			},
-		},
-	],
+	ignorePatterns: ["apps/**", "packages/**"],
+	extends: ["@repo/eslint-config/library.js"],
+	parser: "@typescript-eslint/parser",
+	parserOptions: {
+		project: true,
+	}
 };
