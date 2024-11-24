@@ -1,4 +1,4 @@
-import { EmergencyEvent } from '@/app/types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import { filterDataByTimestamp } from './filters';
 
 export interface Facets {
@@ -19,19 +19,25 @@ export function calculateFacets(
 	const filteredData = data.filter((item) =>
 		filterDataByTimestamp(item, timeToShow),
 	);
-	const typeCount = filteredData.reduce((acc, item) => {
-		if (item.type) {
-			acc[item.type] = (acc[item.type] || 0) + 1;
-		}
-		return acc;
-	}, {} as Record<string, number>);
+	const typeCount = filteredData.reduce(
+		(acc, item) => {
+			if (item.type) {
+				acc[item.type] = (acc[item.type] || 0) + 1;
+			}
+			return acc;
+		},
+		{} as Record<string, number>,
+	);
 
-	const priorityCount = filteredData.reduce((acc, item) => {
-		if (item.priority) {
-			acc[item.priority] = (acc[item.priority] || 0) + 1;
-		}
-		return acc;
-	}, {} as Record<string, number>);
+	const priorityCount = filteredData.reduce(
+		(acc, item) => {
+			if (item.priority) {
+				acc[item.priority] = (acc[item.priority] || 0) + 1;
+			}
+			return acc;
+		},
+		{} as Record<string, number>,
+	);
 
 	const sortedTypes = Object.entries(typeCount).sort(([, a], [, b]) => b - a);
 

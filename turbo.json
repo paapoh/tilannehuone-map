@@ -3,7 +3,11 @@
   "tasks": {
     "dev": {
         "cache": false
-      }
+      },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["apps/web/.next/**", "!apps/web/.next/cache/**"]
+    }
   },
   "globalEnv": ["RABBITMQ_USERNAME", "RABBITMQ_PASSWORD", "RABBITMQ_HOST"]
 }

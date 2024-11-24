@@ -11,7 +11,6 @@ import { DEFAULT_FILTERS, Filters } from '@/utils/filters';
 import { fiFI } from '../dictionaries/fi-FI';
 import { StatisticBox } from './StatisticDrawer';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';

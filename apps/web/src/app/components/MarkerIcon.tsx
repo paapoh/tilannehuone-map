@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { EmergencyEvent } from '../types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 
 // Cache to store created icons
 const iconCache = new Map<string, L.Icon>();
@@ -20,7 +20,7 @@ const MarkerIcon = (emergencyEvent: EmergencyEvent) => {
 	// Create new icon if not found in cache
 	const icon = new L.Icon({
 		iconUrl,
-		className: `w-5 h-5 rounded-full border-2 border-white shadow-marker`,
+		className: 'w-5 h-5 rounded-full border-2 border-white shadow-marker',
 		iconSize: [emergencyEvent.priority, emergencyEvent.priority],
 		iconAnchor: [15, 30],
 		popupAnchor: [0, -30],

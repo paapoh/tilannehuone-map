@@ -7,17 +7,19 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev --parallel",
-    "dev:fetcher": "turbo run dev --filter=tilannehuone-datafetcher"
-
+    "dev": "turbo run dev",
+    "dev:fetcher": "turbo run dev --filter=tilannehuone-datafetcher",
+    "build": "turbo run build"
   },
   "packageManager": "npm@10.8.1",
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.0.3",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "eslint-plugin-turbo": "^2.3.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "turbo": "^2.3.1"
   }
 }
