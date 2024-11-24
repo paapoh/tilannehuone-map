@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +23,7 @@ import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import createClusterCustomIcon from './ClusterIcon';
 import { useQuery } from '@tanstack/react-query';
+import { Map, Marker as LeafletMarker } from 'leaflet';
 
 const getMapData = async (): Promise<EmergencyEvent[]> => {
 	const response = await fetch('/api/map');
@@ -33,6 +34,9 @@ const getMapData = async (): Promise<EmergencyEvent[]> => {
 const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 	const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
 	const [timeToShow, setTimeToShow] = useState<number>(24);
+	const [sheetOpen, setSheetOpen] = useState(false);
+	const mapRef = useRef<Map | null>(null);
+	const markerRefs = useRef<Record<string, LeafletMarker>>({});
 
 	const { data: emergencyEvents = [], isLoading } = useQuery({
 		queryKey: ['emergencyEvents'],
@@ -47,6 +51,16 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 	const hasFilters = useMemo(() => {
 		return Object.values(filters).some((filter) => filter.length > 0);
 	}, [filters]);
+
+	// FIXME: Have to come up with better solution..., e.g., storing the last visited marker's id
+	// mapRef.current?.on('movestart', () => {
+	// 	Object.entries(markerRefs.current).map(({ _, marker }) => {
+	// 		console.log(marker);
+	// 		if (marker) {
+	// 			marker.closePopup();
+	// 		}
+	// 	});
+	// });
 
 	return (
 		<div className="mx-auto size-full relative">
@@ -81,17 +95,23 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 					setTimeToShow={setTimeToShow}
 				/>
 			</Drawer>
-			<Sheet>
+			<Sheet open={sheetOpen}>
 				<SheetTrigger asChild>
 					<Button
 						variant="outline"
 						size="icon"
 						className="absolute top-4 left-28 z-[1000]"
+						onClick={() => setSheetOpen(true)}
 					>
 						<PanelRightOpen />
 					</Button>
 				</SheetTrigger>
-				<SideDrawer content={emergencyEvents} />
+				<SideDrawer
+					content={emergencyEvents}
+					map={mapRef}
+					markers={markerRefs}
+					setSheetOpen={setSheetOpen}
+				/>
 			</Sheet>
 
 			<Card className="size-full">
@@ -103,6 +123,7 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 						zoomControl={false}
 						zoom={5}
 						className="size-full rounded-md overflow-hidden"
+						ref={mapRef}
 					>
 						<TileLayer
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -134,6 +155,12 @@ const MapComponent = ({ isDebug }: { isDebug: boolean }) => {
 										key={emergencyEvent.id}
 										position={emergencyEvent.position}
 										icon={MarkerIcon(emergencyEvent)}
+										ref={(el) => {
+											if (el && markerRefs.current)
+												markerRefs.current[
+													emergencyEvent.id
+												] = el;
+										}}
 									>
 										<Popup>
 											{isDebug ? (
