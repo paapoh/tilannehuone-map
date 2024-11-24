@@ -12,10 +12,11 @@
   "packageManager": "npm@10.8.1",
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.0.3",
-    "@repo/typescript-config": "*",
     "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@typescript-eslint/parser": "^8.15.0",
     "eslint-plugin-turbo": "^2.3.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "turbo": "^2.3.1"
   }
 }
