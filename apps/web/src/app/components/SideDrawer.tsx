@@ -1,7 +1,7 @@
 'use client';
 import { SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
-import { EmergencyEvent } from '../types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import { Dispatch, RefObject, SetStateAction, useState } from 'react';
 import { searchFrom } from '@/lib/utils';
 import { Map, type Marker } from 'leaflet';

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
-import { EmergencyEvent } from '../types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import MarkerIcon from './MarkerIcon';
 import { calculateFacets } from '@/utils/facets';
 import {

@@ -1,5 +1,6 @@
 const nextConfig = {
-	/* config options here */
+	transpilePackages: ['tilannehuone-shared'],
 };
 
 export default nextConfig;
+

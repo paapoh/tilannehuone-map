@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { EmergencyEvent } from '../types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 
 // Cache to store created icons
 const iconCache = new Map<string, L.Icon>();

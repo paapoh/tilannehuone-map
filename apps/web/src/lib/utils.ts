@@ -1,4 +1,4 @@
-import { EmergencyEvent } from '@/app/types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Marker } from 'leaflet';

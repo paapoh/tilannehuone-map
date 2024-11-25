@@ -1,4 +1,4 @@
-import { EmergencyEvent } from '@/app/types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import { filterDataByTimestamp } from './filters';
 
 export interface Facets {

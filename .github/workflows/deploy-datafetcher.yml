@@ -1,0 +1,75 @@
+name: Deploy Datafetcher worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/datafetcher/**' 
+      - 'packages/tilannehuone-shared/**'
+      - 'packages/typescript-config/**'
+      - '.github/workflows/deploy-datafetcher.yml'
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.check.outputs.should-deploy }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Determine if deploy is needed
+      id: check
+      run: |
+        # Get the list of changed files
+        CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+        
+        # Define files/directories that should trigger a deployment
+        TRIGGER_PATHS=(
+          "apps/datafetcher/"
+          "packages/tilannehuone-shared/"
+          "packages/typescript-config/"
+        )
+        
+        # Check if any of the changed files match the trigger paths
+        SHOULD_DEPLOY=false
+        for PATH in "${TRIGGER_PATHS[@]}"; do
+          if echo "$CHANGED_FILES" | grep -q "^$PATH"; then
+            SHOULD_DEPLOY=true
+            break
+          fi
+        done
+        
+        echo "should-deploy=$SHOULD_DEPLOY" >> $GITHUB_ENV
+        echo "::set-output name=should-deploy::$SHOULD_DEPLOY"
+
+  deploy:
+    needs: check-changes
+    if: ${{ needs.check-changes.outputs.should-deploy == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build the project
+      run: npx turbo run build --filter=apps/datafetcher
+
+    - name: Deploy to Cloudflare
+      env:
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      run: |
+        cd apps/datafetcher
+        npx wrangler publish
+

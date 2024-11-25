@@ -1,4 +1,4 @@
-import { EmergencyEvent } from '@/app/types/emergency';
+import { EmergencyEvent } from 'tilannehuone-shared';
 import { Facets } from './facets';
 
 export interface Filters {

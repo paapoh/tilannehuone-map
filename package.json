@@ -7,7 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev",
+    "dev:fetcher": "turbo run dev --filter=tilannehuone-datafetcher",
     "build": "turbo run build"
   },
   "packageManager": "npm@10.8.1",
