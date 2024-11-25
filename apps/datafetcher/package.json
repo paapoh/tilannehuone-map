@@ -1,7 +1,8 @@
 {
   "name": "tilannehuone-datafetcher",
   "scripts": {
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc && wrangler deploy"
   },
   "dependencies": {
     "amqplib": "^0.10.5",
@@ -10,6 +11,9 @@
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.5"
+    "@cloudflare/workers-types": "^4.20241112.0",
+    "@types/amqplib": "^0.10.5",
+    "typescript": "^5.7.2",
+    "wrangler": "^3.90.0"
   }
 }

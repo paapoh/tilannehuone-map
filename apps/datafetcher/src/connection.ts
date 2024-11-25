@@ -1,6 +1,6 @@
 import client, { Connection, Channel } from "amqplib";
 
-import { rmqUser, rmqPass, rmqhost } from "./config";
+import { Env } from ".";
 
 // TODO: This might be better of in the shared lib, from which producer and consumer could inherit from...
 class RabbitMQConnection {
@@ -8,14 +8,14 @@ class RabbitMQConnection {
     channel!: Channel;
     private connected!: Boolean;
 
-    async connect() {
+    async connect(env: Env) {
         if (this.connected && this.channel) return;
         else this.connected = true;
 
         try {
             console.log(`Connecting to Rabbit-MQ Server`);
             this.connection = await client.connect(
-                `amqp://${rmqUser}:${rmqPass}@${rmqhost}:5672`
+                `amqp://${env.RABBITMQ_USERNAME}:${env.RABBITMQ_PASSWORD}@${env.RABBITMQ_HOST}:5672`
             );
 
             console.log(`Rabbit MQ Connection is ready`);
@@ -29,10 +29,10 @@ class RabbitMQConnection {
         }
     }
 
-    async sendToQueue(queue: string, message: any) {
+    async sendToQueue(queue: string, message: any, env: Env) {
         try {
             if (!this.channel) {
-                await this.connect();
+                await this.connect(env);
             }
 
             this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));

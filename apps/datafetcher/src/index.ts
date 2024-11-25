@@ -2,17 +2,19 @@ import { EmergencyEvent } from "tilannehuone-shared";
 import mqConnection from "./connection";
 import { sendEvents } from "./event";
 import { fetchData } from "./handleData";
+import { ScheduledEvent, EventContext } from '@cloudflare/workers-types'
 
-const send = async (events: EmergencyEvent[]) => {
-    await mqConnection.connect();
+const send = async (events: EmergencyEvent[], env: Env) => {
+    await mqConnection.connect(env);
 
-    sendEvents(events);
+    sendEvents(events, env);
+    return "Success";
 };
 
-const main = async () => {
+const main = async (env: Env) => {
     const data = await fetchData();
     if (isEmergencyEventArray(data)) {
-        send(data);
+        return send(data, env);
     }
 }
 
@@ -23,4 +25,18 @@ function isEmergencyEventArray(input: InputType): input is EmergencyEvent[] {
     return Array.isArray(input);
 }
 
-main()
+export interface Env {
+    RABBITMQ_USERNAME: string;
+    RABBITMQ_PASSWORD: string;
+    RABBITMQ_HOST: string;
+}
+
+export default {
+    async scheduled(
+        _event: ScheduledEvent,
+        env: Env,
+        ctx: EventContext<Env, any, any>
+    ) {
+        ctx.waitUntil(main(env));
+    },
+}
